@@ -16,7 +16,23 @@ def index():
 
 @app.route('/speech-to-text', methods=['POST'])
 def speech_to_text_route():
-    return None
+    print("processing speech to text")
+    #retrieve voice data from user's front end post request
+    audio_binary = request.data
+
+    #process voice data into text format
+    text = speech_to_text(audio_binary)
+
+    #return response to user in json
+    response = app.response_class(
+        response = json.dumps({'text':text}),
+        status=200,
+        mimetype='application/json'
+    )
+
+    print response
+    print response.data
+    return response
 
 
 @app.route('/process-message', methods=['POST'])
