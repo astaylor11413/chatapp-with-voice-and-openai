@@ -37,11 +37,28 @@ def speech_to_text_route():
 
 @app.route('/process-message', methods=['POST'])
 def process_prompt_route():
+    #retrieve user message from request
+    user_message = request.json['userMessage']
+
+    #retrieve user's preferred voice
+    voice = request.json['voice']
+
+    #use openai processor helper function to process message
+    openai_response_text = openai_process_message(user_message)
+
+    #use text to speech helper function to translate response into audio
+    #include voice preference
+    openai_response_speech = text_to_speech(openai_response_text,voice)
+
+    #send expected json response back to front end
     response = app.response_class(
-        response=json.dumps({"openaiResponseText": None, "openaiResponseSpeech": None}),
-        status=200,
-        mimetype='application/json'
+        response = json.dumps({
+            "openaiResponseText": openai_response_text, 
+            "openaiResponseSpeech": openai_response_speech}),
+        status = 200,
+        mimetype = 'application/json'
     )
+    print response
     return response
 
 
