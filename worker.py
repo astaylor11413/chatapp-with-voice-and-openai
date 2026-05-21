@@ -42,4 +42,21 @@ def text_to_speech(text, voice=""):
 
 
 def openai_process_message(user_message):
-    return none
+    #Set the role for the OpenAI api assistant
+    #This is so it can respond within the preferred context
+    prompt = "Act like a personal assistant. You can respond to questions, translate sentences, summarize news and give recommendations. Keep responses concise - 2 to 3 sentences maximum."
+
+    #call openAI to process the prompt before interacting with user
+    openai_response = openai_client.chat.completions.create(
+        model = "gpt-5-nano",
+        messages=[
+            {"role":"system","content":prompt},
+            {"role":"user","content":user_message}
+        ],
+        max_completion_tokens=1000
+    )
+    print("openai_response:",openai_response)
+
+    #parse response to get message for prompt
+    response_text = openai_response.choices[0].message.content
+    return response_text
