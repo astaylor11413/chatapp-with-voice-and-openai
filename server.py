@@ -58,7 +58,7 @@ def process_prompt_route():
         status = 200,
         mimetype = 'application/json'
     )
-    print response
+    print(response)
     return response
 
 
