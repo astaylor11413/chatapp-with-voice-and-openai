@@ -37,8 +37,33 @@ def speech_to_text(audio_binary):
 
 
 def text_to_speech(text, voice=""):
-    return none
+    #define the data needed to be sent for the http POST request
+    #POST is for sending/processing data
+    #requires api URL, Paramaters, Body
+    base_url = "https://sn-watson-tts.labs.skills.network"
+    api_url = base_url + "/text-to-speech/api/v1/syntesize?output=output_text.wav"
 
+    #if user selects a preferred voice, add a voice parameter for request
+    if voice != "" and voice != "default":
+        api_url += "&voice=" + voice
+
+    #set the headers for the request
+    headers = {
+        'Accept': 'audio/wav',
+        'Content-Type': 'application/json',
+    }
+
+    #set the body of the request
+    json_data = {
+        'text' : text,
+    }
+
+    #send request to TTS service and save response
+    response = requests.post(api_url, headers=headers, json=json_data)
+    print('TTS response:',response)
+    return response.content
+    
+    
 
 
 def openai_process_message(user_message):
