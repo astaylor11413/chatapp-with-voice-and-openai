@@ -15,7 +15,7 @@ def speech_to_text(audio_binary):
 
     #set the headers for the request
     headers = {
-        'Content-Type': 'audio/wav',
+        'Content-Type': 'audio/webm',
     }
     
     #define the model you want to use to process speech
@@ -27,7 +27,7 @@ def speech_to_text(audio_binary):
     body = audio_binary
 
     #Send http request with all defined variables and save response
-    response = requests.post(api_url,params=params,data=body).json()
+    response = requests.post(api_url,params=params,headers=headers,data=body).json()
 
     #parse the json response to retrieve assistant text
     if response.get('results'):
@@ -75,7 +75,7 @@ def openai_process_message(user_message):
 
     #call openAI to process the prompt before interacting with user
     openai_response = openai_client.chat.completions.create(
-        model = "gpt-3",
+        model = "gpt-4o-mini",
         messages=[
             {"role":"system","content":prompt},
             {"role":"user","content":user_message}
