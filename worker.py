@@ -13,6 +13,11 @@ def speech_to_text(audio_binary):
     base_url = "https://sn-watson-stt.labs.skills.network"
     api_url = base_url+'/speech-to-text/api/v1/recognize'
 
+    #set the headers for the request
+    headers = {
+        'Content-Type': 'audio/wav',
+    }
+    
     #define the model you want to use to process speech
     params = {
         'model':'en-US_Multimedia',
@@ -25,15 +30,12 @@ def speech_to_text(audio_binary):
     response = requests.post(api_url,params=params,data=body).json()
 
     #parse the json response to retrieve assistant text
-    while bool(response.get('reults')):
-        print('speech to text response:', response)
-		text = response.get('results')
-                        .pop()
-                        .get('alternatives')
-                        .pop()
-                        .get('transcript')
-		print('recognised text: ', text)
-		return text
+    if response.get('results'):
+        text = response.get('results')[-1].get('alternatives')[-1].get('transcript')
+        print('Recognized text: ', text)
+        return text
+		
+    return "Could not understand audio"
 
 
 def text_to_speech(text, voice=""):
@@ -41,7 +43,7 @@ def text_to_speech(text, voice=""):
     #POST is for sending/processing data
     #requires api URL, Paramaters, Body
     base_url = "https://sn-watson-tts.labs.skills.network"
-    api_url = base_url + "/text-to-speech/api/v1/syntesize?output=output_text.wav"
+    api_url = base_url + "/text-to-speech/api/v1/synthesize?output=output_text.wav"
 
     #if user selects a preferred voice, add a voice parameter for request
     if voice != "" and voice != "default":
@@ -73,7 +75,7 @@ def openai_process_message(user_message):
 
     #call openAI to process the prompt before interacting with user
     openai_response = openai_client.chat.completions.create(
-        model = "gpt-5-nano",
+        model = "gpt-3",
         messages=[
             {"role":"system","content":prompt},
             {"role":"user","content":user_message}

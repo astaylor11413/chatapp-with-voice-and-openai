@@ -30,8 +30,8 @@ def speech_to_text_route():
         mimetype='application/json'
     )
 
-    print response
-    print response.data
+    print(response)
+    print(response.data)
     return response
 
 
@@ -50,11 +50,13 @@ def process_prompt_route():
     #include voice preference
     openai_response_speech = text_to_speech(openai_response_text,voice)
 
+    openai_response_speech_base64 = base64.b64encode(openai_response_speech_binary).decode('utf-8')
+
     #send expected json response back to front end
     response = app.response_class(
         response = json.dumps({
             "openaiResponseText": openai_response_text, 
-            "openaiResponseSpeech": openai_response_speech}),
+            "openaiResponseSpeech": openai_response_speech_base64}),
         status = 200,
         mimetype = 'application/json'
     )
